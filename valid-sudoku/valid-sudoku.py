@@ -1,8 +1,4 @@
-class Solution:
-    def isValidSudoku2(self, board: List[List[str]]) -> bool:
-        checkList = [0,0,0,0,0,0,0,0,0]
-        
-        
+class Solution:  
     def isValidSudoku(self, board: List[List[str]]) -> bool:
         for line in board:
             hashmap = {}
