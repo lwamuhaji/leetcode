@@ -1,38 +1,26 @@
-from collections import defaultdict, deque
+from collections import deque
 
-def BFS(n, startNode, arr, check):
-    cnt = 1
-    que = deque([startNode])
-    visited = [True for _ in range(n+1)]
-    visited[startNode] = False
-
-    while que:
-        node = que.popleft()
-        for target in arr[node]:
-            if check[node][target] and check[target][node] and visited[target]:
-                visited[target] = False
-                que.append(target)
-                cnt += 1
-
-    return cnt
-
+def count_with_bfs(node, wires):
+    count = 1
+    visited = [False for _ in range(101)]
+    visited[node] = True
+    queue = deque([node])
+    
+    while queue:
+        current_node = queue.popleft()
+        for wire in wires:
+            target_node = sum(wire) - current_node
+            if (current_node == wire[0] or current_node == wire[1]) and not visited[target_node]:
+                queue.append(target_node)
+                count += 1
+                visited[target_node] = True
+    return count
+            
 def solution(n, wires):
-    answer = n
-    arr = defaultdict(list)
-    check = [[False for _ in range(n+1)] for _ in range(n+1)]
-
-    for wire in wires:
-        arr[wire[0]].append(wire[1])
-        arr[wire[1]].append(wire[0])
-        check[wire[0]][wire[1]] = True
-        check[wire[1]][wire[0]] = True
-
-    for i, wire in enumerate(wires):
-        a,b = wire
-        check[a][b] = False
-        check[b][a] = False
-        answer = min(answer, abs(BFS(n, a, arr, check) - BFS(n, b, arr, check)))
-        check[a][b] = True
-        check[b][a] = True
-
-    return answer
+    min = n
+    for i in range(len(wires)):
+        count1 = count_with_bfs(wires[i][0], wires[:i] + wires[i+1:])
+        count2 = count_with_bfs(wires[i][1], wires[:i] + wires[i+1:])
+        if min > abs(count1 - count2):
+            min = abs(count1 - count2)
+    return min
