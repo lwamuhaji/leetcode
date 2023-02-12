@@ -1,28 +1,21 @@
-from collections import deque
+def ancestor(node, parents):
+    if parents[node] == node:
+        return node
+    else:
+        return ancestor(parents[node], parents)
 
-
-# 트리를 node1부터 DFS로 순회하며 node1과 node2가 연결되어 있는지 탐색
-def is_connected_with(node1, node2, edges):
-    visited = [False for _ in range(100)]
-    queue = deque([node1])
-    while queue:
-        current_node = queue.popleft()
-        visited[current_node] = True
-        if current_node == node2:
-            return True
-        for edge in edges:
-            if edge[0] == current_node and not visited[edge[1]]:
-                queue.append(edge[1])
-            if edge[1] == current_node and not visited[edge[0]]:
-                queue.append(edge[0])
-    return False
-
-def solution(n, costs: list):
-    costs.sort(key=lambda x: x[2])
-    used = []
-
-    for cost in costs:
-        if not is_connected_with(cost[0], cost[1], used):
-            used.append(cost)
+def solution(n, costs):
+    answer = 0
+    edges = sorted([(x[2], x[0], x[1]) for x in costs])
+    parents = [i for i in range(n)]
+    bridges = 0
+    for w, f, t in edges:
+        if ancestor(f, parents) != ancestor(t, parents):
+            answer += w
+            parents[ancestor(f, parents)] = t
+            bridges += 1
+        if bridges == n - 1:
+            break
+    return answer
     
     return sum(cost[2] for cost in used)
