@@ -1,27 +1,29 @@
-max_memo = [[None for _ in range(201)] for __ in range(201)]
-min_memo = [[None for _ in range(201)] for __ in range(201)]
+memo = {}
 
-def foo(arr, start, end):
-    if max_memo[start][end] != None:
-        return max_memo[start][end], min_memo[start][end]
-    
-    if start == end:
-        return int(arr[start]), int(arr[start])
-    
+def operate(arr, n):
+    operator = arr[n]
+    if operator == "+":
+        result = arr[n - 1] + arr[n + 1]
+    if operator == "-":
+        result = arr[n - 1] - arr[n + 1]
+    return arr[:n-1] + (result,) + arr[n+2:]
+
+def foo(arr):
+    if memo.get(arr):
+        return memo[arr]
     results = []
-    for n in range(0, end - start, 2):
-        a = foo(arr, start, start + n)
-        b = foo(arr, start + n + 2, end)
-        if arr[start + n + 1] == "+":
-            results.append(a[0] + b[0])
-            results.append(a[1] + b[1])
-        elif arr[start + n + 1] == "-":
-            results.append(a[0] - b[1])
-            results.append(a[1] - b[0])
-    
-    max_memo[start][end] = max(results)
-    min_memo[start][end] = min(results)
-    return max(results), min(results)
+    if len(arr) == 3:
+        return operate(arr, 1)[0]
+            
+    for n in range(1, len(arr), 2):
+        results.append(foo(operate(arr, n)))
+    max_result = max(results)
+    memo[arr] = max_result
+    return max_result
 
 def solution(arr):
-    return foo(arr, 0, len(arr)-1)[0]
+    for i in range(0, len(arr), 2):
+        arr[i] = int(arr[i])
+        
+    return foo(tuple(arr))
+        
