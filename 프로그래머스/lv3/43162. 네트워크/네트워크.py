@@ -16,15 +16,3 @@ def solution(n, computers):
     for i in range(n):
         answer.append(find(parents, i))
     return len(set(answer))
-
-def solution(n, computers):
-    temp = []
-    for i in range(n):
-        temp.append(i)
-    for i in range(n):
-        for j in range(n):
-            if computers[i][j]:
-                for k in range(n):
-                    if temp[k] == temp[i]:
-                        temp[k] = temp[j]
-    return len(set(temp))
