@@ -2,23 +2,14 @@ from collections import deque
 from itertools import combinations
 
 r, c = map(int, input().split())
-mat = []
-for _ in range(r):
-    mat.append(list(map(int, input().split())))
+mat = [list(map(int, input().split())) for _ in range(r)]
 
-# 비어있는 곳, 오염된 곳 리스트
-empty, polluted = [], []
-for x in range(r):
-    for y in range(c):
-        if mat[x][y] == 0:
-            empty.append((x, y))
-        if mat[x][y] == 2:
-            polluted.append((x, y))
-combs = combinations(empty, 3)
-min_cnt = 999999
-for ((x1, y1), (x2, y2), (x3, y3)) in combs:
-    mat[x1][y1], mat[x2][y2], mat[x3][y3] = 1, 1, 1
-    current = None
+empty = [(i, j) for i in range(r) for j in range(c) if mat[i][j] == 0]
+polluted = [(i, j) for i in range(r) for j in range(c) if mat[i][j] == 2]
+
+min_cnt = 99
+for walls in combinations(empty, 3):
+    for x, y in walls: mat[x][y] = 1
     queue = deque(polluted)
     visited = [[False]*c for _ in range(r)]
     cnt = 0
@@ -30,6 +21,6 @@ for ((x1, y1), (x2, y2), (x3, y3)) in combs:
             if 0 <= nx < r and 0 <= ny < c and not visited[nx][ny] and mat[nx][ny] == 0:
                 queue.append((nx,ny))
                 visited[nx][ny] = True
-    min_cnt = cnt if cnt < min_cnt else min_cnt
-    mat[x1][y1], mat[x2][y2], mat[x3][y3] = 0, 0, 0
+    min_cnt = min(cnt, min_cnt)
+    for x, y in walls: mat[x][y] = 0
 print(len(empty) - 3 - min_cnt + len(polluted))
