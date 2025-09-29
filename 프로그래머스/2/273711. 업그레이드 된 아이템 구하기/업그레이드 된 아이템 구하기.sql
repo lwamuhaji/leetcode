@@ -1,0 +1,13 @@
+-- 코드를 작성해주세요
+SELECT B.ITEM_ID, B.ITEM_NAME, B.RARITY FROM
+    (SELECT A.RARITY, A.ITEM_ID AS PID, B.ITEM_ID AS CID 
+        FROM ITEM_INFO A
+        JOIN ITEM_TREE B 
+            ON A.ITEM_ID = B.PARENT_ITEM_ID
+        WHERE A.RARITY = 'RARE') A
+    JOIN ITEM_INFO B 
+        ON A.CID = B.ITEM_ID
+    ORDER BY ITEM_ID DESC;
+    
+    
+    
