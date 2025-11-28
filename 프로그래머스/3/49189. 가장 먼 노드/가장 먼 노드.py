@@ -1,7 +1,10 @@
+import heapq
+
 def solution(n, edge):
-    cost = [0 for _ in range(n+1)] # 정점 사이의 거리
+    dist = [float("inf") for _ in range(n+1)] # 정점 사이의 거리
+    dist[1] = 0 # 자기 자신은 0
     visited = [False for _ in range(n+1)] # 방문 리스트
-    queue = [1] # 첫 방문 넣어놓기
+    queue = [(0, 1)] # 첫 방문 넣어놓기 (cost, 노드번호)
     visited[1] = True # 방문함
 
     # 인접리스트 만들기
@@ -13,11 +16,19 @@ def solution(n, edge):
         adj[e[1]].add(e[0])
 
     while queue:
-        current = queue.pop(0)
-        for next_node in adj[current]:
-            if not visited[next_node]:
-                queue.append(next_node)
-                visited[next_node] = True
-                cost[next_node] = cost[current] + 1
+        cost, current = heapq.heappop(queue)
+        visited[current] = True
         
-    return cost.count(max(cost))
+        if(cost > dist[current]): continue # 계산할 필요 없음
+        
+        # 더 작은 값이 나오면 dist 갱신
+        for nextNode in adj[current]:
+            if dist[nextNode] > cost + 1:
+                dist[nextNode] = cost + 1
+                heapq.heappush(queue, (dist[nextNode], nextNode))
+    
+    print(dist)
+        
+    return dist[1:].count(max(dist[1:]))
+
+
