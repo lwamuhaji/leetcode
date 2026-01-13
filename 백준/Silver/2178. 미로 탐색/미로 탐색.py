@@ -1,29 +1,30 @@
 from collections import deque
 
-# N, M 입력받기
 N, M = map(int, input().split())
-# 미로 입력받기
-maze = [[0] * M for _ in range(N)]
-visited = [[False] * M for _ in range(N)]
-for x in range(N):
-    line = input()
-    for y, n in enumerate(line):
-        maze[x][y] = int(n)
 
-# DFS 탐색
-current = None
+m = []
+
+for _ in range(N):
+    row = input()
+    row_list = []
+    for c in row:
+        row_list.append(int(c))
+    m.append(row_list)
+
 queue = deque([(0, 0, 1)])
+visited = [[False for _ in range(M)] for _ in range(N)]
 visited[0][0] = True
-tblr = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+dist = [(0, 1), (1, 0), (-1, 0), (0, -1)]
 
 while queue:
-    current = queue.popleft()
-    if current[0] == N-1 and current[1] == M-1:
-        print(current[2])
+    x, y, cost = queue.popleft()
+    if x == N-1 and y == M-1:
+        print(cost)
         break
+    for dx, dy in dist:
+        if x+dx >= 0 and y+dy >= 0 and x+dx < N and y+dy < M:
+            if m[x+dx][y+dy] == 1 and not visited[x+dx][y+dy]:
+                queue.append((x+dx, y+dy, cost+1))
+                visited[x+dx][y+dy] = True
     
-    for offset in tblr:
-        x, y = current[0] + offset[0], current[1] + offset[1]
-        if 0 <= x < N and 0 <= y < M and maze[x][y] and not visited[x][y]:
-            queue.append((x, y, current[2] + 1))
-            visited[x][y] = True
+    
