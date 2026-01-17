@@ -1,30 +1,16 @@
-from collections import deque
-
 N, M = map(int, input().split())
+mat = [list(map(int, input())) for _ in range(N)]
 
-m = []
-
-for _ in range(N):
-    row = input()
-    row_list = []
-    for c in row:
-        row_list.append(int(c))
-    m.append(row_list)
-
-queue = deque([(0, 0, 1)])
 visited = [[False for _ in range(M)] for _ in range(N)]
 visited[0][0] = True
-dist = [(0, 1), (1, 0), (-1, 0), (0, -1)]
+queue = [(0, 0, 1)]
 
 while queue:
-    x, y, cost = queue.popleft()
+    x, y, cost = queue.pop(0)
     if x == N-1 and y == M-1:
         print(cost)
-        break
-    for dx, dy in dist:
-        if x+dx >= 0 and y+dy >= 0 and x+dx < N and y+dy < M:
-            if m[x+dx][y+dy] == 1 and not visited[x+dx][y+dy]:
-                queue.append((x+dx, y+dy, cost+1))
-                visited[x+dx][y+dy] = True
-    
-    
+    for dx, dy in [(0, 1), (1, 0), (-1, 0), (0, -1)]:
+        cx, cy = x + dx, y + dy
+        if 0 <= cx < N and 0 <= cy < M and mat[cx][cy] and not visited[cx][cy]:
+            queue.append((cx, cy, cost+1))
+            visited[cx][cy] = True
