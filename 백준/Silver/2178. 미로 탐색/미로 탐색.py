@@ -1,7 +1,7 @@
 N, M = map(int, input().split())
 mat = [list(map(int, input())) for _ in range(N)]
 
-visited = [[False for _ in range(M)] for _ in range(N)]
+visited = [[False] * M for _ in range(N)]
 visited[0][0] = True
 queue = [(0, 0, 1)]
 
