@@ -9,8 +9,8 @@ def foo(n):
                 arr.add(a+b)
                 arr.add(a-b)
                 arr.add(b-a)
-                if b != 0: arr.add(a/b)
-                if a != 0: arr.add(b/a)
+                if b != 0: arr.add(a//b)
+                if a != 0: arr.add(b//a)
                 arr.add(a*b)
     m[n] = arr
                 
